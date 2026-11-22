@@ -1,0 +1,24 @@
+name: probe
+on:
+  workflow_dispatch:
+    inputs:
+      chpass:
+        description: ch pass
+        required: false
+        default: ''
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: net
+        env:
+          CHUSER: admin
+          CHPW: ${{ github.event.inputs.chpass }}
+          TOPIC: ch59845-yb-9x2
+        run: |
+          set -u
+          date -u
+          echo "EGRESS=$(curl -s -m 10 https://api.ipify.org || echo NA)"
+          python3 probe.py
